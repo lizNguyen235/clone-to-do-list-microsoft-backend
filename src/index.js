@@ -1,15 +1,12 @@
 const express = require("express");
 const app = express();
-const db = require("./config/db");
-const routes = require("./routes/index");
-
-const sequelize = require("./config/db"); // đường dẫn tùy vào vị trí file
-
-sequelize
-  .authenticate()
-  .then(() => console.log("✅ Kết nối cơ sở dữ liệu thành công!"))
-  .catch((err) => console.error("❌ Kết nối thất bại:", err));
-
+const routes = require("./routes/index.router.js");
+const db = require("./models/index.model.js");
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Database reset & synced.");
+});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/", routes);
 
 app.listen(3000, () => {

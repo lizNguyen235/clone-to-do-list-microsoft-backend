@@ -1,35 +1,85 @@
-exports.getAllTasks = (req, res) => {
+const db = require("../models/index.model.js");
+function getAllTasks(req, res) {
   res.send("Get all tasks");
-};
+}
 
-exports.createTask = (req, res) => {
-  res.send("Create task");
-};
+async function addTask(req, res) {
+  const {
+    name,
+    due_date,
+    is_important,
+    category,
+    remind,
+    is_my_day,
+    content,
+    list_id,
+  } = req.body;
 
-exports.getTaskById = (req, res) => {
+  try {
+    await db.Task.create({
+      name,
+      due_date,
+      is_important,
+      category,
+      remind,
+      is_my_day,
+      content,
+      list_id,
+    });
+    return res.status(201).send("Task created successfully");
+  } catch (error) {
+    console.error("Error creating task:", error);
+    return res.status(500).send("Internal Server Error");
+  }
+}
+function getTaskById(req, res) {
   res.send(`Get task by ID: ${req.params.id}`);
-};
+}
 
-exports.addTask = (req, res) => {
-  res.send(`Get task by ID: ${req.params.id}`);
-};
-
-exports.updateTask = (req, res) => {
+function updateTask(req, res) {
   res.send(`Update task ID: ${req.params.id}`);
-};
+}
 
-exports.deleteTask = (req, res) => {
-  res.send(`Delete task ID: ${req.params.id}`);
-};
+async function deleteTask(req, res) {
+  const taskId = parseInt(req.params.task_id, 10);
+  try {
+    await db.Task.destroy({ where: { id: taskId } });
+    return res.send(`Delete task with ID: ${taskId}`);
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    return res.status(500).send("Internal Server Error");
+  }
+}
 
-exports.completeTask = (req, res) => {
+function completeTask(req, res) {
   res.send(`Mark task ${req.params.id} as complete`);
-};
+}
 
-exports.incompleteTask = (req, res) => {
+function incompleteTask(req, res) {
   res.send(`Mark task ${req.params.id} as incomplete`);
-};
+}
 
-exports.deleteMultipleTasks = (req, res) => {
-  res.send("Delete multiple tasks");
+function deleteMultipleTasks(req, res) {
+  const taskIds = req.body.task_ids; // expect an array of task IDs
+  if (!Array.isArray(taskIds) || taskIds.length === 0) {
+    return res.status(400).send("Invalid task IDs");
+  }
+
+  db.Task.destroy({ where: { id: taskIds } })
+    .then(() => res.send("Tasks deleted successfully"))
+    .catch((error) => {
+      console.error("Error deleting tasks:", error);
+      res.status(500).send("Internal Server Error");
+    });
+}
+
+module.exports = {
+  getAllTasks,
+  getTaskById,
+  addTask,
+  updateTask,
+  deleteTask,
+  completeTask,
+  incompleteTask,
+  deleteMultipleTasks,
 };

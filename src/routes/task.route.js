@@ -17,7 +17,7 @@ router.patch("/:task_id", tasks.updateTask);
 // DELETE /api/v1/tasks/:task_id
 router.delete("/:task_id", tasks.deleteTask);
 
-// DELETE /api/v1/tasks (delete nhiều task từ body)
+// DELETE /api/v1/tasks/multiple-delete (delete nhiều task từ body)
 router.delete("/multiple-delete", tasks.deleteMultipleTasks);
 
 module.exports = router;
