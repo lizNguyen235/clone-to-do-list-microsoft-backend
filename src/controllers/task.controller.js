@@ -1,6 +1,12 @@
 const db = require("../models/index.model.js");
 function getAllTasks(req, res) {
-  res.send("Get all tasks");
+  db.Task.findAll()
+    .then((tasks) => res.json(tasks))
+    .catch((error) => {
+      console.error("Error fetching tasks:", error);
+      res.status(500).send("Internal Server Error");
+    });
+  return;
 }
 
 async function addTask(req, res) {
@@ -51,16 +57,9 @@ async function deleteTask(req, res) {
   }
 }
 
-function completeTask(req, res) {
-  res.send(`Mark task ${req.params.id} as complete`);
-}
-
-function incompleteTask(req, res) {
-  res.send(`Mark task ${req.params.id} as incomplete`);
-}
-
 function deleteMultipleTasks(req, res) {
   const taskIds = req.body.task_ids; // expect an array of task IDs
+  console.log("Deleting tasks with IDs:", taskIds);
   if (!Array.isArray(taskIds) || taskIds.length === 0) {
     return res.status(400).send("Invalid task IDs");
   }
@@ -79,7 +78,5 @@ module.exports = {
   addTask,
   updateTask,
   deleteTask,
-  completeTask,
-  incompleteTask,
   deleteMultipleTasks,
 };

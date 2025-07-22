@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       list_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {
