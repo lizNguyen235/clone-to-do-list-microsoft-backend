@@ -39,11 +39,53 @@ async function addTask(req, res) {
   }
 }
 function getTaskById(req, res) {
-  res.send(`Get task by ID: ${req.params.id}`);
+  const taskId = parseInt(req.params.task_id, 10);
+  console.log("Fetching task with ID:", taskId);
+  db.Task.findByPk(taskId)
+    .then((task) => {
+      if (!task) {
+        return res.status(404).send("Task not found");
+      }
+      res.json(task);
+    })
+    .catch((error) => {
+      console.error("Error fetching task:", error);
+      res.status(500).send("Internal Server Error");
+    });
+  return;
 }
 
 function updateTask(req, res) {
-  res.send(`Update task ID: ${req.params.id}`);
+  const taskId = parseInt(req.params.task_id, 10);
+  const {
+    name,
+    due_date,
+    is_important,
+    category,
+    remind,
+    is_my_day,
+    content,
+    list_id,
+  } = req.body;
+
+  db.Task.update(
+    {
+      name,
+      due_date,
+      is_important,
+      category,
+      remind,
+      is_my_day,
+      content,
+      list_id,
+    },
+    { where: { id: taskId } }
+  )
+    .then(() => res.send(`Update task with ID: ${taskId}`))
+    .catch((error) => {
+      console.error("Error updating task:", error);
+      res.status(500).send("Internal Server Error");
+    });
 }
 
 async function deleteTask(req, res) {
@@ -72,11 +114,21 @@ function deleteMultipleTasks(req, res) {
     });
 }
 
+function deleteAllTasks(req, res) {
+  db.Task.destroy({ where: {}, truncate: true })
+    .then(() => res.send("All tasks deleted successfully"))
+    .catch((error) => {
+      console.error("Error deleting all tasks:", error);
+      res.status(500).send("Internal Server Error");
+    });
+}
+
 module.exports = {
   getAllTasks,
   getTaskById,
   addTask,
   updateTask,
   deleteTask,
+  deleteAllTasks,
   deleteMultipleTasks,
 };

@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const taskRoutes = require("./task.route");
-
+const groupRoutes = require("./group.route");
+const stepRoutes = require("./step.route");
+const listRoutes = require("./list.route");
+const fileRoutes = require("./file.route");
 router.use("/tasks", taskRoutes);
-
+router.use("/groups", groupRoutes);
+router.use("/steps", stepRoutes);
+router.use("/lists", listRoutes);
+router.use("/files", fileRoutes);
 module.exports = router;
