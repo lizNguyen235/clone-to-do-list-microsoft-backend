@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const listController = require("../controllers/list.controller");
+const listController = require("../controllers/task-list.controller");
 
 router.get("/", listController.getAllLists);
 router.post("/", listController.addList);

@@ -1,4 +1,4 @@
-const db = require("../models");
+const db = require("../models/index.model.js");
 const TaskStep = db.TaskStep;
 
 async function addStep(req, res) {

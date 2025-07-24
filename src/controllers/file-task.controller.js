@@ -1,4 +1,4 @@
-const db = require("../models");
+const db = require("../models/index.model.js");
 const File = db.File;
 
 async function addFile(req, res) {
