@@ -1,21 +1,23 @@
 const db = require("../models/index.model.js");
-const List = db.List;
+const List = db.TaskList;
 
 async function getAllLists(req, res) {
   try {
     const lists = await List.findAll();
     res.json(lists);
   } catch (error) {
+    console.error("Error fetching lists:", error);
     res.status(500).json({ error: "Lỗi khi lấy danh sách lists" });
   }
 }
 
 async function addList(req, res) {
   try {
-    const { name, description } = req.body;
-    const newList = await List.create({ name, description });
+    const { name, theme, group_id } = req.body;
+    const newList = await List.create({ name, theme, group_id });
     res.status(201).json(newList);
   } catch (error) {
+    console.error("Error fetching lists:", error);
     res.status(500).json({ error: "Lỗi khi tạo list" });
   }
 }

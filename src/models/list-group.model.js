@@ -11,6 +11,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
+      theme: {
+        type: DataTypes.STRING(255),
+        defaultValue: "gray",
+      },
+      group_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
     },
     {
       tableName: "list_groups",

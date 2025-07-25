@@ -1,8 +1,8 @@
 const db = require("../models/index.model.js");
-
+const Group = db.ListGroup;
 function deleteGroup(req, res) {
   const groupId = parseInt(req.params.group_id, 10);
-  db.Group.destroy({ where: { id: groupId } })
+  Group.destroy({ where: { id: groupId } })
     .then((deleted) => {
       if (!deleted) {
         return res.status(404).send("Group not found");
@@ -17,7 +17,7 @@ function deleteGroup(req, res) {
 }
 
 function getAllGroups(req, res) {
-  db.Group.findAll()
+  Group.findAll()
     .then((groups) => res.json(groups))
     .catch((error) => {
       console.error("Error fetching groups:", error);
@@ -27,7 +27,7 @@ function getAllGroups(req, res) {
 }
 function getGroupById(req, res) {
   const groupId = parseInt(req.params.group_id, 10);
-  db.Group.findByPk(groupId)
+  Group.findByPk(groupId)
     .then((group) => {
       if (!group) {
         return res.status(404).send("Group not found");
@@ -41,9 +41,9 @@ function getGroupById(req, res) {
   return;
 }
 function createGroup(req, res) {
-  const { name, description } = req.body;
+  const { name } = req.body;
 
-  db.Group.create({ name, description })
+  Group.create({ name })
     .then((group) => res.status(201).json(group))
     .catch((error) => {
       console.error("Error creating group:", error);
@@ -53,13 +53,16 @@ function createGroup(req, res) {
 }
 function updateGroup(req, res) {
   const groupId = parseInt(req.params.group_id, 10);
-  const { name, description } = req.body;
+  const { name } = req.body;
 
-  db.Group.update({ name, description }, { where: { id: groupId } })
-    .then(([rowsUpdated]) => {
-      if (rowsUpdated === 0) {
+  Group.findByPk(groupId)
+    .then((group) => {
+      if (!group) {
         return res.status(404).send("Group not found");
       }
+      return group.update({ name });
+    })
+    .then(() => {
       res.status(200).send("Group updated successfully");
     })
     .catch((error) => {
